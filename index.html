@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayurvedic Healthcare Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header" id="app-header" style="display: none;">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Ayurvedic Healthcare System</h1>
+                </div>
+                <div class="header-actions">
+                    <div class="user-info" id="user-info" style="display: none;">
+                        <span id="user-name"></span>
+                        <span id="user-role"></span>
+                        <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page active">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h2>Ayurvedic Healthcare System</h2>
+                    <p>Professional Healthcare Management Platform</p>
+                </div>
+                
+                <div class="auth-form-container">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" onclick="showAuthForm('login')">Login</button>
+                        <button class="auth-tab" onclick="showAuthForm('register')">Register</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form active">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="login-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="login-password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select id="login-role" class="form-control" required>
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="patient">Patient</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                    </form>
+
+                    <!-- Registration Form -->
+                    <form id="register-form" class="auth-form hidden">
+                        <div class="form-group">
+                            <label class="form-label">Role</label>
+                            <select id="register-role" class="form-control" onchange="updateRegistrationFields()" required>
+                                <option value="">Select Role</option>
+                                <option value="admin">Admin</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="patient">Patient</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="register-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" id="register-mobile" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="register-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="register-password" class="form-control" required>
+                        </div>
+
+                        <!-- Role-specific Fields -->
+                        <div id="doctor-fields" class="role-fields hidden">
+                            <div class="form-group">
+                                <label class="form-label">Medical License Number</label>
+                                <input type="text" id="license-number" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Hospital/Clinic</label>
+                                <input type="text" id="hospital-location" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Specialization</label>
+                                <select id="specialization" class="form-control">
+                                    <option value="">Select Specialization</option>
+                                    <option value="General Ayurveda">General Ayurveda</option>
+                                    <option value="Panchakarma">Panchakarma</option>
+                                    <option value="Kayachikitsa">Kayachikitsa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="patient-fields" class="role-fields hidden">
+                            <div class="form-group">
+                                <label class="form-label">Emergency Contact</label>
+                                <input type="tel" id="emergency-contact" class="form-control">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn--primary btn--full-width">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="page hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2>Admin Dashboard</h2>
+                <p>System Management & User Administration</p>
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-number">25</div>
+                    <div class="stat-label">Total Doctors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">150</div>
+                    <div class="stat-label">Total Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">85</div>
+                    <div class="stat-label">Active Cases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">320</div>
+                    <div class="stat-label">Diet Plans Generated</div>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <button class="btn btn--primary" onclick="showPatientAssessment()">New Patient Assessment</button>
+                <button class="btn btn--secondary" onclick="showMessage('User management functionality', 'info')">Manage Users</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctor Dashboard -->
+    <div id="doctor-dashboard" class="page hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2>Doctor Dashboard</h2>
+                <p>Patient Care & Diet Management</p>
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Active Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">45</div>
+                    <div class="stat-label">Assessments Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">38</div>
+                    <div class="stat-label">Diet Plans Created</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Patient Satisfaction</div>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <button class="btn btn--primary" onclick="showPatientAssessment()">New Patient Assessment</button>
+                <button class="btn btn--secondary" onclick="showMessage('Patient list functionality', 'info')">Patient List</button>
+                <button class="btn btn--outline" onclick="showMessage('Reports functionality', 'info')">Generate Reports</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Dashboard -->
+    <div id="patient-dashboard" class="page hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2>Patient Dashboard</h2>
+                <p>Your Health Journey & Nutrition Plan</p>
+            </div>
+            <div class="patient-info-card">
+                <div class="patient-summary">
+                    <h3>Your Dosha Profile</h3>
+                    <div class="dosha-result-mini">
+                        <span class="dosha-name">Vata-Pitta</span>
+                        <span class="dosha-confidence">85% confidence</span>
+                    </div>
+                </div>
+                <div class="next-appointment">
+                    <h4>Next Consultation</h4>
+                    <p>Dr. Rajesh Kumar</p>
+                    <p>15th Dec 2024, 2:00 PM</p>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <button class="btn btn--primary" onclick="showPatientAssessment()">Take Assessment</button>
+                <button class="btn btn--secondary" onclick="showResults()">View My Results</button>
+                <button class="btn btn--outline" onclick="showMessage('Progress tracking functionality', 'info')">Track Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Assessment Page -->
+    <div id="assessment-page" class="page hidden">
+        <div class="container">
+            <div class="assessment-header">
+                <h2>Comprehensive Patient Assessment</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="assessment-progress"></div>
+                    </div>
+                    <span class="progress-text" id="assessment-progress-text">Step 1 of 5</span>
+                </div>
+            </div>
+
+            <form id="patient-assessment-form" class="assessment-form">
+                <!-- Demographics Section -->
+                <div class="assessment-section active" id="demographics-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Patient Name</label>
+                            <input type="text" name="patient-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" name="age" class="form-control" min="1" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" class="form-control" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" name="height" class="form-control" min="100" max="250" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" name="weight" class="form-control" min="20" max="300" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Activity Level</label>
+                            <select name="activity_level" class="form-control" required>
+                                <option value="">Select Activity Level</option>
+                                <option value="Sedentary">Sedentary</option>
+                                <option value="Light">Light</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Active">Active</option>
+                                <option value="Very Active">Very Active</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vital Signs Section -->
+                <div class="assessment-section hidden" id="vitals-section">
+                    <h3>Vital Signs & Medical Parameters</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Systolic Blood Pressure (mmHg)</label>
+                            <input type="number" name="systolic_bp" class="form-control" min="70" max="250" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Diastolic Blood Pressure (mmHg)</label>
+                            <input type="number" name="diastolic_bp" class="form-control" min="40" max="150" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Heart Rate (bpm)</label>
+                            <input type="number" name="heart_rate" class="form-control" min="40" max="200" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Body Temperature (°F)</label>
+                            <input type="number" name="temperature" class="form-control" min="95" max="110" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Respiratory Rate (breaths/min)</label>
+                            <input type="number" name="respiratory_rate" class="form-control" min="10" max="60">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lifestyle Section -->
+                <div class="assessment-section hidden" id="lifestyle-section">
+                    <h3>Lifestyle Assessment</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Frequency</label>
+                            <select name="exercise" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="None">None</option>
+                                <option value="1-2 days/week">1-2 days/week</option>
+                                <option value="3-4 days/week">3-4 days/week</option>
+                                <option value="5+ days/week">5+ days/week</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sleep Quality</label>
+                            <select name="sleep_quality" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Poor">Poor</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Good">Good</option>
+                                <option value="Excellent">Excellent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Stress Level</label>
+                            <select name="stress_level" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Low">Low</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="High">High</option>
+                                <option value="Severe">Severe</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Smoking Status</label>
+                            <select name="smoking" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Never">Never</option>
+                                <option value="Former">Former</option>
+                                <option value="Current">Current</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alcohol Consumption</label>
+                            <select name="alcohol" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Never">Never</option>
+                                <option value="Occasional">Occasional</option>
+                                <option value="Regular">Regular</option>
+                                <option value="Daily">Daily</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ayurvedic Assessment Section -->
+                <div class="assessment-section hidden" id="ayurvedic-section">
+                    <h3>Ayurvedic Constitutional Assessment</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Body Frame</label>
+                            <select name="body_frame" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Thin/Light">Thin/Light</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Heavy/Large">Heavy/Large</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Skin Type</label>
+                            <select name="skin_type" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Dry">Dry</option>
+                                <option value="Oily">Oily</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Combination">Combination</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hair Type</label>
+                            <select name="hair_type" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Dry/Thin">Dry/Thin</option>
+                                <option value="Oily/Thick">Oily/Thick</option>
+                                <option value="Normal">Normal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Appetite Pattern</label>
+                            <select name="appetite" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Variable">Variable</option>
+                                <option value="Strong">Strong</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Digestion Type</label>
+                            <select name="digestion" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Quick/Variable">Quick/Variable</option>
+                                <option value="Strong/Fast">Strong/Fast</option>
+                                <option value="Slow/Steady">Slow/Steady</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sleep Pattern</label>
+                            <select name="sleep_pattern" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Light sleeper">Light sleeper</option>
+                                <option value="Moderate sleeper">Moderate sleeper</option>
+                                <option value="Heavy sleeper">Heavy sleeper</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mental Characteristics</label>
+                            <select name="mental_state" class="form-control" required>
+                                <option value="">Select</option>
+                                <option value="Anxious/Restless">Anxious/Restless</option>
+                                <option value="Focused/Intense">Focused/Intense</option>
+                                <option value="Calm/Steady">Calm/Steady</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical History Section -->
+                <div class="assessment-section hidden" id="history-section">
+                    <h3>Medical History & Notes</h3>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Food Allergies & Intolerances</label>
+                            <textarea name="allergies" class="form-control" rows="3" placeholder="List any food allergies or intolerances"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Current Medications</label>
+                            <textarea name="medications" class="form-control" rows="3" placeholder="List current medications and dosages"></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Medical Conditions</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="conditions" value="None"> None
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="conditions" value="Diabetes"> Diabetes
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="conditions" value="Hypertension"> Hypertension
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="conditions" value="Thyroid"> Thyroid
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="conditions" value="Heart Disease"> Heart Disease
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Doctor's Notes</label>
+                            <textarea name="doctor_notes" class="form-control" rows="4" placeholder="Additional observations and notes"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="assessment-navigation">
+                    <button type="button" id="prev-btn" class="btn btn--outline" onclick="previousSection()" style="display: none;">Previous</button>
+                    <button type="button" id="next-btn" class="btn btn--primary" onclick="nextSection()">Next</button>
+                    <button type="submit" id="complete-btn" class="btn btn--primary" style="display: none;">Complete Assessment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results-page" class="page hidden">
+        <div class="container">
+            <div class="results-header">
+                <h2>Assessment Results</h2>
+                <div class="patient-summary">
+                    <span id="results-patient-name">Patient Name</span>
+                    <span id="results-date">Date: Today</span>
+                </div>
+            </div>
+
+            <div class="results-content">
+                <div class="dosha-results">
+                    <div class="primary-dosha">
+                        <h3>Your Primary Dosha</h3>
+                        <div class="dosha-card">
+                            <div class="dosha-name" id="primary-dosha-name">Vata</div>
+                            <div class="dosha-confidence" id="primary-dosha-confidence">85% Confidence</div>
+                        </div>
+                    </div>
+
+                    <div class="dosha-breakdown">
+                        <h4>Complete Dosha Analysis</h4>
+                        <div class="dosha-scores">
+                            <div class="dosha-score">
+                                <span class="dosha-label">Vata</span>
+                                <div class="score-bar">
+                                    <div class="score-fill vata-score" id="vata-bar"></div>
+                                </div>
+                                <span class="score-value" id="vata-score">0%</span>
+                            </div>
+                            <div class="dosha-score">
+                                <span class="dosha-label">Pitta</span>
+                                <div class="score-bar">
+                                    <div class="score-fill pitta-score" id="pitta-bar"></div>
+                                </div>
+                                <span class="score-value" id="pitta-score">0%</span>
+                            </div>
+                            <div class="dosha-score">
+                                <span class="dosha-label">Kapha</span>
+                                <div class="score-bar">
+                                    <div class="score-fill kapha-score" id="kapha-bar"></div>
+                                </div>
+                                <span class="score-value" id="kapha-score">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dosha-chart" style="position: relative; height: 300px;">
+                        <canvas id="dosha-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dosha-characteristics">
+                    <h4>Your Dosha Characteristics</h4>
+                    <div class="characteristics-content" id="dosha-description">
+                        <p>Your dosha analysis will appear here...</p>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn btn--primary btn--lg" onclick="generateDietPlan()">Generate Diet Plan</button>
+                    <button class="btn btn--secondary" onclick="generateReport()">Generate Report</button>
+                    <button class="btn btn--outline" onclick="goToDashboard()">Back to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diet Plan Page -->
+    <div id="diet-plan-page" class="page hidden">
+        <div class="container">
+            <div class="diet-plan-header">
+                <h2>Personalized Diet Plan</h2>
+                <div class="patient-summary">
+                    <span id="plan-patient-name">Patient Name</span>
+                    <span id="plan-dosha">Dosha: Vata</span>
+                </div>
+            </div>
+
+            <div class="diet-plan-content">
+                <div class="plan-tabs">
+                    <button class="plan-tab active" onclick="showPlanTab('weekly')">Weekly Plan</button>
+                    <button class="plan-tab" onclick="showPlanTab('nutrition')">Nutrition Analysis</button>
+                    <button class="plan-tab" onclick="showPlanTab('recipes')">Recipes</button>
+                </div>
+
+                <!-- Weekly Plan -->
+                <div id="weekly-plan" class="plan-content active">
+                    <div class="weekly-grid" id="weekly-meals">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Nutrition Analysis -->
+                <div id="nutrition-plan" class="plan-content hidden">
+                    <div class="nutrition-summary">
+                        <h3>Daily Nutrition Breakdown</h3>
+                        <div class="nutrition-cards">
+                            <div class="nutrition-card">
+                                <div class="nutrition-value" id="total-calories">1850</div>
+                                <div class="nutrition-label">Total Calories</div>
+                            </div>
+                            <div class="nutrition-card">
+                                <div class="nutrition-value" id="total-protein">68g</div>
+                                <div class="nutrition-label">Protein</div>
+                            </div>
+                            <div class="nutrition-card">
+                                <div class="nutrition-value" id="total-carbs">285g</div>
+                                <div class="nutrition-label">Carbohydrates</div>
+                            </div>
+                            <div class="nutrition-card">
+                                <div class="nutrition-value" id="total-fat">42g</div>
+                                <div class="nutrition-label">Fat</div>
+                            </div>
+                        </div>
+                        
+                        <div class="micronutrient-chart">
+                            <h4>Nutritional Balance</h4>
+                            <div class="chart-wrapper" style="position: relative; height: 300px;">
+                                <canvas id="nutrition-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recipes -->
+                <div id="recipes-plan" class="plan-content hidden">
+                    <div class="recipe-grid" id="recipe-container">
+                        <!-- Dynamic recipes will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="diet-plan-actions">
+                <button class="btn btn--primary" onclick="downloadDietPlan()">Download Plan</button>
+                <button class="btn btn--secondary" onclick="printDietPlan()">Print</button>
+                <button class="btn btn--outline" onclick="goToDashboard()">Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Page -->
+    <div id="loading-page" class="page hidden">
+        <div class="container">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3 id="loading-message">Processing Assessment...</h3>
+                <p id="loading-details">Analyzing patient data using Ayurvedic principles</p>
+                <div class="loading-progress">
+                    <div class="loading-bar" id="loading-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
